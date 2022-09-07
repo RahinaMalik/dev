@@ -1,0 +1,954 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="RestaurantDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Bills">
+          <Key>
+            <PropertyRef Name="BillsID" />
+          </Key>
+          <Property Name="BillsID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OrderID" Type="int" Nullable="false" />
+          <Property Name="RestaurantID" Type="int" Nullable="false" />
+          <Property Name="BillAmount" Type="float" Nullable="false" />
+          <Property Name="CustomerID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Cuisine">
+          <Key>
+            <PropertyRef Name="CuisineID" />
+          </Key>
+          <Property Name="CuisineID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RestaurantID" Type="int" Nullable="false" />
+          <Property Name="CuisineName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="CustomerID" />
+          </Key>
+          <Property Name="CustomerID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RestaurantID" Type="int" Nullable="false" />
+          <Property Name="CustomerName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="MobileNo" Type="nvarchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DiningTable">
+          <Key>
+            <PropertyRef Name="DiningTableID" />
+          </Key>
+          <Property Name="DiningTableID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RestaurantID" Type="int" Nullable="false" />
+          <Property Name="Location" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DiningTableTrack">
+          <Key>
+            <PropertyRef Name="DiningTableTrackID" />
+          </Key>
+          <Property Name="DiningTableTrackID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DiningTableID" Type="int" Nullable="false" />
+          <Property Name="TableStatus" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="OrderTable">
+          <Key>
+            <PropertyRef Name="OrderID" />
+          </Key>
+          <Property Name="OrderID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OrderDate" Type="datetime" Nullable="false" />
+          <Property Name="RestaurantID" Type="int" Nullable="false" />
+          <Property Name="MenuItemID" Type="int" Nullable="false" />
+          <Property Name="ItemQuantity" Type="int" Nullable="false" />
+          <Property Name="OrderAmount" Type="float" Nullable="false" />
+          <Property Name="DiningTableId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Restaurant">
+          <Key>
+            <PropertyRef Name="RestaurantID" />
+          </Key>
+          <Property Name="RestaurantID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RestaurantName" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Address" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="MobileNo" Type="nvarchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RestaurantMenuItem">
+          <Key>
+            <PropertyRef Name="MenuItemID" />
+          </Key>
+          <Property Name="MenuItemID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CuisineID" Type="int" Nullable="false" />
+          <Property Name="ItemName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ItemPrice" Type="float" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'RestaurantDB.dbo.VListCuisinewiseItemDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="VListCuisinewiseItemDetails">
+          <Key>
+            <PropertyRef Name="CuisineName" />
+            <PropertyRef Name="ItemName" />
+          </Key>
+          <Property Name="CuisineName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ItemName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ItemPrice" Type="float" />
+        </EntityType>
+        <Association Name="FK_Bills_CustomerID">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+          <End Role="Bills" Type="Self.Bills" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="Bills">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Bills_OrderID">
+          <End Role="OrderTable" Type="Self.OrderTable" Multiplicity="1" />
+          <End Role="Bills" Type="Self.Bills" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderTable">
+              <PropertyRef Name="OrderID" />
+            </Principal>
+            <Dependent Role="Bills">
+              <PropertyRef Name="OrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Bills_RestaurantID">
+          <End Role="Restaurant" Type="Self.Restaurant" Multiplicity="1" />
+          <End Role="Bills" Type="Self.Bills" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Restaurant">
+              <PropertyRef Name="RestaurantID" />
+            </Principal>
+            <Dependent Role="Bills">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Cuisine_RestaurantID">
+          <End Role="Restaurant" Type="Self.Restaurant" Multiplicity="1" />
+          <End Role="Cuisine" Type="Self.Cuisine" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Restaurant">
+              <PropertyRef Name="RestaurantID" />
+            </Principal>
+            <Dependent Role="Cuisine">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CuisineID">
+          <End Role="Cuisine" Type="Self.Cuisine" Multiplicity="1" />
+          <End Role="RestaurantMenuItem" Type="Self.RestaurantMenuItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cuisine">
+              <PropertyRef Name="CuisineID" />
+            </Principal>
+            <Dependent Role="RestaurantMenuItem">
+              <PropertyRef Name="CuisineID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Customer_RestaurantID">
+          <End Role="Restaurant" Type="Self.Restaurant" Multiplicity="1" />
+          <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Restaurant">
+              <PropertyRef Name="RestaurantID" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DiningTable_DiningTableID">
+          <End Role="DiningTable" Type="Self.DiningTable" Multiplicity="1" />
+          <End Role="DiningTableTrack" Type="Self.DiningTableTrack" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DiningTable">
+              <PropertyRef Name="DiningTableID" />
+            </Principal>
+            <Dependent Role="DiningTableTrack">
+              <PropertyRef Name="DiningTableID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DiningTableId">
+          <End Role="DiningTable" Type="Self.DiningTable" Multiplicity="1" />
+          <End Role="OrderTable" Type="Self.OrderTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DiningTable">
+              <PropertyRef Name="DiningTableID" />
+            </Principal>
+            <Dependent Role="OrderTable">
+              <PropertyRef Name="DiningTableId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MenuItemID">
+          <End Role="RestaurantMenuItem" Type="Self.RestaurantMenuItem" Multiplicity="1" />
+          <End Role="OrderTable" Type="Self.OrderTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RestaurantMenuItem">
+              <PropertyRef Name="MenuItemID" />
+            </Principal>
+            <Dependent Role="OrderTable">
+              <PropertyRef Name="MenuItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Order_RestaurantID">
+          <End Role="Restaurant" Type="Self.Restaurant" Multiplicity="1" />
+          <End Role="OrderTable" Type="Self.OrderTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Restaurant">
+              <PropertyRef Name="RestaurantID" />
+            </Principal>
+            <Dependent Role="OrderTable">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RestaurantID">
+          <End Role="Restaurant" Type="Self.Restaurant" Multiplicity="1" />
+          <End Role="DiningTable" Type="Self.DiningTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Restaurant">
+              <PropertyRef Name="RestaurantID" />
+            </Principal>
+            <Dependent Role="DiningTable">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="CRUD_Bills" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="BillsID" Type="int" Mode="In" />
+          <Parameter Name="OrderID" Type="int" Mode="In" />
+          <Parameter Name="BillStatus" Type="nvarchar" Mode="In" />
+          <Parameter Name="CustomerID" Type="int" Mode="In" />
+          <Parameter Name="Query" Type="int" Mode="In" />
+        </Function>
+        <Function Name="CRUD_Cuisine" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CuisineID" Type="int" Mode="In" />
+          <Parameter Name="RestaurantID" Type="int" Mode="In" />
+          <Parameter Name="CuisineName" Type="nvarchar" Mode="In" />
+          <Parameter Name="Query" Type="int" Mode="In" />
+        </Function>
+        <Function Name="CRUD_Customer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="int" Mode="In" />
+          <Parameter Name="RestaurantID" Type="int" Mode="In" />
+          <Parameter Name="CustomerName" Type="nvarchar" Mode="In" />
+          <Parameter Name="MobileNo" Type="nvarchar" Mode="In" />
+          <Parameter Name="Query" Type="int" Mode="In" />
+        </Function>
+        <Function Name="CRUD_DiningTable" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="DiningTableID" Type="int" Mode="In" />
+          <Parameter Name="RestaurantID" Type="int" Mode="In" />
+          <Parameter Name="Location" Type="nvarchar" Mode="In" />
+          <Parameter Name="Query" Type="int" Mode="In" />
+        </Function>
+        <Function Name="CRUD_DiningTableTrack" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="DiningTableTrackID" Type="int" Mode="In" />
+          <Parameter Name="DiningTableID" Type="int" Mode="In" />
+          <Parameter Name="TableStatus" Type="nvarchar" Mode="In" />
+          <Parameter Name="Query" Type="int" Mode="In" />
+        </Function>
+        <Function Name="CRUD_OrderTable" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="OrderID" Type="int" Mode="In" />
+          <Parameter Name="OrderDate" Type="datetime" Mode="In" />
+          <Parameter Name="RestaurantID" Type="int" Mode="In" />
+          <Parameter Name="MenuItemID" Type="int" Mode="In" />
+          <Parameter Name="ItemQuantity" Type="int" Mode="In" />
+          <Parameter Name="DiningTableId" Type="int" Mode="In" />
+          <Parameter Name="TableStatus" Type="nvarchar" Mode="In" />
+          <Parameter Name="Query" Type="int" Mode="In" />
+        </Function>
+        <Function Name="CRUD_Restaurant" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RestaurantID" Type="int" Mode="In" />
+          <Parameter Name="RestaurantName" Type="nvarchar" Mode="In" />
+          <Parameter Name="Address" Type="nvarchar" Mode="In" />
+          <Parameter Name="MobileNo" Type="nvarchar" Mode="In" />
+          <Parameter Name="Query" Type="int" Mode="In" />
+        </Function>
+        <Function Name="CRUD_RestaurantMenuItem" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="MenuItemID" Type="int" Mode="In" />
+          <Parameter Name="CuisineID" Type="int" Mode="In" />
+          <Parameter Name="ItemName" Type="nvarchar" Mode="In" />
+          <Parameter Name="ItemPrice" Type="float" Mode="In" />
+          <Parameter Name="Query" Type="int" Mode="In" />
+        </Function>
+        <Function Name="getDaywiseAndTablewiseOrderAmount" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="getFilterByOrderByAllCustomerDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="int" Mode="In" />
+          <Parameter Name="CustomerName" Type="nvarchar" Mode="In" />
+          <Parameter Name="MobileNo" Type="nvarchar" Mode="In" />
+          <Parameter Name="OrderID" Type="int" Mode="In" />
+          <Parameter Name="RestaurantID" Type="int" Mode="In" />
+          <Parameter Name="ItemQuantity" Type="int" Mode="In" />
+          <Parameter Name="OrderAmount" Type="float" Mode="In" />
+          <Parameter Name="DiningTableId" Type="int" Mode="In" />
+          <Parameter Name="RestaurantName" Type="nvarchar" Mode="In" />
+          <Parameter Name="Location" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="getItemPriceByPassingMenuItemId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int">
+          <Parameter Name="MenuItemID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="getListOfCurrentlyVacantTables" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RestaurantID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="getOrderDetailsByOrderID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="OrderID" Type="int" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="OrderID" Type="int" Nullable="false" />
+                <Property Name="OrderDate" Type="datetime" Nullable="false" />
+                <Property Name="RestaurantID" Type="int" Nullable="false" />
+                <Property Name="MenuItemID" Type="int" Nullable="false" />
+                <Property Name="ItemQuantity" Type="int" Nullable="false" />
+                <Property Name="OrderAmount" Type="float" Nullable="false" />
+                <Property Name="DiningTableId" Type="int" Nullable="false" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="getYearwiseAndRestaurantwiseOrderAmount" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="sp_CustomerDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerName" Type="nvarchar" Mode="In" />
+          <Parameter Name="RestaurantName" Type="nvarchar" Mode="In" />
+          <Parameter Name="Location" Type="nvarchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="RestaurantDBModelStoreContainer">
+          <EntitySet Name="Bills" EntityType="Self.Bills" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Cuisine" EntityType="Self.Cuisine" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DiningTable" EntityType="Self.DiningTable" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DiningTableTrack" EntityType="Self.DiningTableTrack" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderTable" EntityType="Self.OrderTable" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Restaurant" EntityType="Self.Restaurant" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RestaurantMenuItem" EntityType="Self.RestaurantMenuItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VListCuisinewiseItemDetails" EntityType="Self.VListCuisinewiseItemDetails" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [VListCuisinewiseItemDetails].[CuisineName] AS [CuisineName], 
+    [VListCuisinewiseItemDetails].[ItemName] AS [ItemName], 
+    [VListCuisinewiseItemDetails].[ItemPrice] AS [ItemPrice]
+    FROM [dbo].[VListCuisinewiseItemDetails] AS [VListCuisinewiseItemDetails]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Bills_CustomerID" Association="Self.FK_Bills_CustomerID">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="Bills" EntitySet="Bills" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Bills_OrderID" Association="Self.FK_Bills_OrderID">
+            <End Role="OrderTable" EntitySet="OrderTable" />
+            <End Role="Bills" EntitySet="Bills" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Bills_RestaurantID" Association="Self.FK_Bills_RestaurantID">
+            <End Role="Restaurant" EntitySet="Restaurant" />
+            <End Role="Bills" EntitySet="Bills" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Cuisine_RestaurantID" Association="Self.FK_Cuisine_RestaurantID">
+            <End Role="Restaurant" EntitySet="Restaurant" />
+            <End Role="Cuisine" EntitySet="Cuisine" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CuisineID" Association="Self.FK_CuisineID">
+            <End Role="Cuisine" EntitySet="Cuisine" />
+            <End Role="RestaurantMenuItem" EntitySet="RestaurantMenuItem" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Customer_RestaurantID" Association="Self.FK_Customer_RestaurantID">
+            <End Role="Restaurant" EntitySet="Restaurant" />
+            <End Role="Customer" EntitySet="Customer" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DiningTable_DiningTableID" Association="Self.FK_DiningTable_DiningTableID">
+            <End Role="DiningTable" EntitySet="DiningTable" />
+            <End Role="DiningTableTrack" EntitySet="DiningTableTrack" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DiningTableId" Association="Self.FK_DiningTableId">
+            <End Role="DiningTable" EntitySet="DiningTable" />
+            <End Role="OrderTable" EntitySet="OrderTable" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MenuItemID" Association="Self.FK_MenuItemID">
+            <End Role="RestaurantMenuItem" EntitySet="RestaurantMenuItem" />
+            <End Role="OrderTable" EntitySet="OrderTable" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Order_RestaurantID" Association="Self.FK_Order_RestaurantID">
+            <End Role="Restaurant" EntitySet="Restaurant" />
+            <End Role="OrderTable" EntitySet="OrderTable" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RestaurantID" Association="Self.FK_RestaurantID">
+            <End Role="Restaurant" EntitySet="Restaurant" />
+            <End Role="DiningTable" EntitySet="DiningTable" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="RestaurantDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <ComplexType Name="getOrderDetailsByOrderID_Result">
+          <Property Name="OrderID" Type="Int32" Nullable="false" />
+          <Property Name="OrderDate" Type="DateTime" Nullable="false" />
+          <Property Name="RestaurantID" Type="Int32" Nullable="false" />
+          <Property Name="MenuItemID" Type="Int32" Nullable="false" />
+          <Property Name="ItemQuantity" Type="Int32" Nullable="false" />
+          <Property Name="OrderAmount" Type="Double" Nullable="false" />
+          <Property Name="DiningTableId" Type="Int32" Nullable="false" />
+        </ComplexType>
+        <EntityType Name="Bill">
+          <Key>
+            <PropertyRef Name="BillsID" />
+          </Key>
+          <Property Name="BillsID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderID" Type="Int32" Nullable="false" />
+          <Property Name="RestaurantID" Type="Int32" Nullable="false" />
+          <Property Name="BillAmount" Type="Double" Nullable="false" />
+          <Property Name="CustomerID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Customer" Relationship="Self.FK_Bills_CustomerID" FromRole="Bills" ToRole="Customer" />
+          <NavigationProperty Name="OrderTable" Relationship="Self.FK_Bills_OrderID" FromRole="Bills" ToRole="OrderTable" />
+          <NavigationProperty Name="Restaurant" Relationship="Self.FK_Bills_RestaurantID" FromRole="Bills" ToRole="Restaurant" />
+        </EntityType>
+        <EntityType Name="Cuisine">
+          <Key>
+            <PropertyRef Name="CuisineID" />
+          </Key>
+          <Property Name="CuisineID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RestaurantID" Type="Int32" Nullable="false" />
+          <Property Name="CuisineName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Restaurant" Relationship="Self.FK_Cuisine_RestaurantID" FromRole="Cuisine" ToRole="Restaurant" />
+          <NavigationProperty Name="RestaurantMenuItems" Relationship="Self.FK_CuisineID" FromRole="Cuisine" ToRole="RestaurantMenuItem" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="CustomerID" />
+          </Key>
+          <Property Name="CustomerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RestaurantID" Type="Int32" Nullable="false" />
+          <Property Name="CustomerName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MobileNo" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Bills" Relationship="Self.FK_Bills_CustomerID" FromRole="Customer" ToRole="Bills" />
+          <NavigationProperty Name="Restaurant" Relationship="Self.FK_Customer_RestaurantID" FromRole="Customer" ToRole="Restaurant" />
+        </EntityType>
+        <EntityType Name="DiningTable">
+          <Key>
+            <PropertyRef Name="DiningTableID" />
+          </Key>
+          <Property Name="DiningTableID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RestaurantID" Type="Int32" Nullable="false" />
+          <Property Name="Location" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="DiningTableTracks" Relationship="Self.FK_DiningTable_DiningTableID" FromRole="DiningTable" ToRole="DiningTableTrack" />
+          <NavigationProperty Name="OrderTables" Relationship="Self.FK_DiningTableId" FromRole="DiningTable" ToRole="OrderTable" />
+          <NavigationProperty Name="Restaurant" Relationship="Self.FK_RestaurantID" FromRole="DiningTable" ToRole="Restaurant" />
+        </EntityType>
+        <EntityType Name="DiningTableTrack">
+          <Key>
+            <PropertyRef Name="DiningTableTrackID" />
+          </Key>
+          <Property Name="DiningTableTrackID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DiningTableID" Type="Int32" Nullable="false" />
+          <Property Name="TableStatus" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="DiningTable" Relationship="Self.FK_DiningTable_DiningTableID" FromRole="DiningTableTrack" ToRole="DiningTable" />
+        </EntityType>
+        <EntityType Name="OrderTable">
+          <Key>
+            <PropertyRef Name="OrderID" />
+          </Key>
+          <Property Name="OrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="RestaurantID" Type="Int32" Nullable="false" />
+          <Property Name="MenuItemID" Type="Int32" Nullable="false" />
+          <Property Name="ItemQuantity" Type="Int32" Nullable="false" />
+          <Property Name="OrderAmount" Type="Double" Nullable="false" />
+          <Property Name="DiningTableId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Bills" Relationship="Self.FK_Bills_OrderID" FromRole="OrderTable" ToRole="Bills" />
+          <NavigationProperty Name="DiningTable" Relationship="Self.FK_DiningTableId" FromRole="OrderTable" ToRole="DiningTable" />
+          <NavigationProperty Name="RestaurantMenuItem" Relationship="Self.FK_MenuItemID" FromRole="OrderTable" ToRole="RestaurantMenuItem" />
+          <NavigationProperty Name="Restaurant" Relationship="Self.FK_Order_RestaurantID" FromRole="OrderTable" ToRole="Restaurant" />
+        </EntityType>
+        <EntityType Name="Restaurant">
+          <Key>
+            <PropertyRef Name="RestaurantID" />
+          </Key>
+          <Property Name="RestaurantID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RestaurantName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Address" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MobileNo" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Bills" Relationship="Self.FK_Bills_RestaurantID" FromRole="Restaurant" ToRole="Bills" />
+          <NavigationProperty Name="Cuisines" Relationship="Self.FK_Cuisine_RestaurantID" FromRole="Restaurant" ToRole="Cuisine" />
+          <NavigationProperty Name="Customers" Relationship="Self.FK_Customer_RestaurantID" FromRole="Restaurant" ToRole="Customer" />
+          <NavigationProperty Name="DiningTables" Relationship="Self.FK_RestaurantID" FromRole="Restaurant" ToRole="DiningTable" />
+          <NavigationProperty Name="OrderTables" Relationship="Self.FK_Order_RestaurantID" FromRole="Restaurant" ToRole="OrderTable" />
+        </EntityType>
+        <EntityType Name="RestaurantMenuItem">
+          <Key>
+            <PropertyRef Name="MenuItemID" />
+          </Key>
+          <Property Name="MenuItemID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CuisineID" Type="Int32" Nullable="false" />
+          <Property Name="ItemName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ItemPrice" Type="Double" />
+          <NavigationProperty Name="Cuisine" Relationship="Self.FK_CuisineID" FromRole="RestaurantMenuItem" ToRole="Cuisine" />
+          <NavigationProperty Name="OrderTables" Relationship="Self.FK_MenuItemID" FromRole="RestaurantMenuItem" ToRole="OrderTable" />
+        </EntityType>
+        <EntityType Name="VListCuisinewiseItemDetail">
+          <Key>
+            <PropertyRef Name="CuisineName" />
+            <PropertyRef Name="ItemName" />
+          </Key>
+          <Property Name="CuisineName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ItemName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ItemPrice" Type="Double" />
+        </EntityType>
+        <Association Name="FK_Bills_CustomerID">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+          <End Role="Bills" Type="Self.Bill" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="Bills">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Bills_OrderID">
+          <End Role="OrderTable" Type="Self.OrderTable" Multiplicity="1" />
+          <End Role="Bills" Type="Self.Bill" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderTable">
+              <PropertyRef Name="OrderID" />
+            </Principal>
+            <Dependent Role="Bills">
+              <PropertyRef Name="OrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Bills_RestaurantID">
+          <End Role="Restaurant" Type="Self.Restaurant" Multiplicity="1" />
+          <End Role="Bills" Type="Self.Bill" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Restaurant">
+              <PropertyRef Name="RestaurantID" />
+            </Principal>
+            <Dependent Role="Bills">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Cuisine_RestaurantID">
+          <End Role="Restaurant" Type="Self.Restaurant" Multiplicity="1" />
+          <End Role="Cuisine" Type="Self.Cuisine" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Restaurant">
+              <PropertyRef Name="RestaurantID" />
+            </Principal>
+            <Dependent Role="Cuisine">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CuisineID">
+          <End Role="Cuisine" Type="Self.Cuisine" Multiplicity="1" />
+          <End Role="RestaurantMenuItem" Type="Self.RestaurantMenuItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cuisine">
+              <PropertyRef Name="CuisineID" />
+            </Principal>
+            <Dependent Role="RestaurantMenuItem">
+              <PropertyRef Name="CuisineID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Customer_RestaurantID">
+          <End Role="Restaurant" Type="Self.Restaurant" Multiplicity="1" />
+          <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Restaurant">
+              <PropertyRef Name="RestaurantID" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DiningTable_DiningTableID">
+          <End Role="DiningTable" Type="Self.DiningTable" Multiplicity="1" />
+          <End Role="DiningTableTrack" Type="Self.DiningTableTrack" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DiningTable">
+              <PropertyRef Name="DiningTableID" />
+            </Principal>
+            <Dependent Role="DiningTableTrack">
+              <PropertyRef Name="DiningTableID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DiningTableId">
+          <End Role="DiningTable" Type="Self.DiningTable" Multiplicity="1" />
+          <End Role="OrderTable" Type="Self.OrderTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DiningTable">
+              <PropertyRef Name="DiningTableID" />
+            </Principal>
+            <Dependent Role="OrderTable">
+              <PropertyRef Name="DiningTableId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RestaurantID">
+          <End Role="Restaurant" Type="Self.Restaurant" Multiplicity="1" />
+          <End Role="DiningTable" Type="Self.DiningTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Restaurant">
+              <PropertyRef Name="RestaurantID" />
+            </Principal>
+            <Dependent Role="DiningTable">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MenuItemID">
+          <End Role="RestaurantMenuItem" Type="Self.RestaurantMenuItem" Multiplicity="1" />
+          <End Role="OrderTable" Type="Self.OrderTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RestaurantMenuItem">
+              <PropertyRef Name="MenuItemID" />
+            </Principal>
+            <Dependent Role="OrderTable">
+              <PropertyRef Name="MenuItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Order_RestaurantID">
+          <End Role="Restaurant" Type="Self.Restaurant" Multiplicity="1" />
+          <End Role="OrderTable" Type="Self.OrderTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Restaurant">
+              <PropertyRef Name="RestaurantID" />
+            </Principal>
+            <Dependent Role="OrderTable">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="RestaurantDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Bills" EntityType="Self.Bill" />
+          <EntitySet Name="Cuisines" EntityType="Self.Cuisine" />
+          <EntitySet Name="Customers" EntityType="Self.Customer" />
+          <EntitySet Name="DiningTables" EntityType="Self.DiningTable" />
+          <EntitySet Name="DiningTableTracks" EntityType="Self.DiningTableTrack" />
+          <EntitySet Name="OrderTables" EntityType="Self.OrderTable" />
+          <EntitySet Name="Restaurants" EntityType="Self.Restaurant" />
+          <EntitySet Name="RestaurantMenuItems" EntityType="Self.RestaurantMenuItem" />
+          <EntitySet Name="VListCuisinewiseItemDetails" EntityType="Self.VListCuisinewiseItemDetail" />
+          <AssociationSet Name="FK_Bills_CustomerID" Association="Self.FK_Bills_CustomerID">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="Bills" EntitySet="Bills" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Bills_OrderID" Association="Self.FK_Bills_OrderID">
+            <End Role="OrderTable" EntitySet="OrderTables" />
+            <End Role="Bills" EntitySet="Bills" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Bills_RestaurantID" Association="Self.FK_Bills_RestaurantID">
+            <End Role="Restaurant" EntitySet="Restaurants" />
+            <End Role="Bills" EntitySet="Bills" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Cuisine_RestaurantID" Association="Self.FK_Cuisine_RestaurantID">
+            <End Role="Restaurant" EntitySet="Restaurants" />
+            <End Role="Cuisine" EntitySet="Cuisines" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CuisineID" Association="Self.FK_CuisineID">
+            <End Role="Cuisine" EntitySet="Cuisines" />
+            <End Role="RestaurantMenuItem" EntitySet="RestaurantMenuItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Customer_RestaurantID" Association="Self.FK_Customer_RestaurantID">
+            <End Role="Restaurant" EntitySet="Restaurants" />
+            <End Role="Customer" EntitySet="Customers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DiningTable_DiningTableID" Association="Self.FK_DiningTable_DiningTableID">
+            <End Role="DiningTable" EntitySet="DiningTables" />
+            <End Role="DiningTableTrack" EntitySet="DiningTableTracks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DiningTableId" Association="Self.FK_DiningTableId">
+            <End Role="DiningTable" EntitySet="DiningTables" />
+            <End Role="OrderTable" EntitySet="OrderTables" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RestaurantID" Association="Self.FK_RestaurantID">
+            <End Role="Restaurant" EntitySet="Restaurants" />
+            <End Role="DiningTable" EntitySet="DiningTables" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MenuItemID" Association="Self.FK_MenuItemID">
+            <End Role="RestaurantMenuItem" EntitySet="RestaurantMenuItems" />
+            <End Role="OrderTable" EntitySet="OrderTables" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Order_RestaurantID" Association="Self.FK_Order_RestaurantID">
+            <End Role="Restaurant" EntitySet="Restaurants" />
+            <End Role="OrderTable" EntitySet="OrderTables" />
+          </AssociationSet>
+          <FunctionImport Name="getOrderDetailsByOrderID" IsComposable="true" ReturnType="Collection(RestaurantDBModel.getOrderDetailsByOrderID_Result)">
+            <Parameter Name="OrderID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="CRUD_Bills" ReturnType="Collection(String)">
+            <Parameter Name="BillsID" Mode="In" Type="Int32" />
+            <Parameter Name="OrderID" Mode="In" Type="Int32" />
+            <Parameter Name="BillStatus" Mode="In" Type="String" />
+            <Parameter Name="CustomerID" Mode="In" Type="Int32" />
+            <Parameter Name="Query" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="CRUD_Cuisine" ReturnType="Collection(String)">
+            <Parameter Name="CuisineID" Mode="In" Type="Int32" />
+            <Parameter Name="RestaurantID" Mode="In" Type="Int32" />
+            <Parameter Name="CuisineName" Mode="In" Type="String" />
+            <Parameter Name="Query" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="CRUD_Customer" ReturnType="Collection(String)">
+            <Parameter Name="CustomerID" Mode="In" Type="Int32" />
+            <Parameter Name="RestaurantID" Mode="In" Type="Int32" />
+            <Parameter Name="CustomerName" Mode="In" Type="String" />
+            <Parameter Name="MobileNo" Mode="In" Type="String" />
+            <Parameter Name="Query" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="CRUD_DiningTable" ReturnType="Collection(String)">
+            <Parameter Name="DiningTableID" Mode="In" Type="Int32" />
+            <Parameter Name="RestaurantID" Mode="In" Type="Int32" />
+            <Parameter Name="Location" Mode="In" Type="String" />
+            <Parameter Name="Query" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="CRUD_DiningTableTrack" ReturnType="Collection(String)">
+            <Parameter Name="DiningTableTrackID" Mode="In" Type="Int32" />
+            <Parameter Name="DiningTableID" Mode="In" Type="Int32" />
+            <Parameter Name="TableStatus" Mode="In" Type="String" />
+            <Parameter Name="Query" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="CRUD_OrderTable" ReturnType="Collection(Double)">
+            <Parameter Name="OrderID" Mode="In" Type="Int32" />
+            <Parameter Name="OrderDate" Mode="In" Type="DateTime" />
+            <Parameter Name="RestaurantID" Mode="In" Type="Int32" />
+            <Parameter Name="MenuItemID" Mode="In" Type="Int32" />
+            <Parameter Name="ItemQuantity" Mode="In" Type="Int32" />
+            <Parameter Name="DiningTableId" Mode="In" Type="Int32" />
+            <Parameter Name="TableStatus" Mode="In" Type="String" />
+            <Parameter Name="Query" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="CRUD_Restaurant" ReturnType="Collection(String)">
+            <Parameter Name="RestaurantID" Mode="In" Type="Int32" />
+            <Parameter Name="RestaurantName" Mode="In" Type="String" />
+            <Parameter Name="Address" Mode="In" Type="String" />
+            <Parameter Name="MobileNo" Mode="In" Type="String" />
+            <Parameter Name="Query" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="CRUD_RestaurantMenuItem" ReturnType="Collection(String)">
+            <Parameter Name="MenuItemID" Mode="In" Type="Int32" />
+            <Parameter Name="CuisineID" Mode="In" Type="Int32" />
+            <Parameter Name="ItemName" Mode="In" Type="String" />
+            <Parameter Name="ItemPrice" Mode="In" Type="Double" />
+            <Parameter Name="Query" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="getDaywiseAndTablewiseOrderAmount" ReturnType="Collection(RestaurantDBModel.getDaywiseAndTablewiseOrderAmount_Result)" />
+          <FunctionImport Name="getFilterByOrderByAllCustomerDetails">
+            <Parameter Name="CustomerID" Mode="In" Type="Int32" />
+            <Parameter Name="CustomerName" Mode="In" Type="String" />
+            <Parameter Name="MobileNo" Mode="In" Type="String" />
+            <Parameter Name="OrderID" Mode="In" Type="Int32" />
+            <Parameter Name="RestaurantID" Mode="In" Type="Int32" />
+            <Parameter Name="ItemQuantity" Mode="In" Type="Int32" />
+            <Parameter Name="OrderAmount" Mode="In" Type="Double" />
+            <Parameter Name="DiningTableId" Mode="In" Type="Int32" />
+            <Parameter Name="RestaurantName" Mode="In" Type="String" />
+            <Parameter Name="Location" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="getListOfCurrentlyVacantTables" ReturnType="Collection(RestaurantDBModel.getListOfCurrentlyVacantTables_Result)">
+            <Parameter Name="RestaurantID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="getYearwiseAndRestaurantwiseOrderAmount" ReturnType="Collection(RestaurantDBModel.getYearwiseAndRestaurantwiseOrderAmount_Result)" />
+          <FunctionImport Name="sp_CustomerDetails">
+            <Parameter Name="CustomerName" Mode="In" Type="String" />
+            <Parameter Name="RestaurantName" Mode="In" Type="String" />
+            <Parameter Name="Location" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="getDaywiseAndTablewiseOrderAmount_Result">
+          <Property Type="String" Name="RestaurantName" Nullable="false" MaxLength="200" />
+          <Property Type="DateTime" Name="OrderDate" Nullable="false" Precision="23" />
+          <Property Type="Int32" Name="DiningTableId" Nullable="false" />
+          <Property Type="Int32" Name="Day" Nullable="true" />
+          <Property Type="Double" Name="TotalOrderAmount" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="getListOfCurrentlyVacantTables_Result">
+          <Property Type="String" Name="RestaurantName" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="TableStatus" Nullable="true" MaxLength="100" />
+        </ComplexType>
+        <ComplexType Name="getYearwiseAndRestaurantwiseOrderAmount_Result">
+          <Property Type="String" Name="RestaurantName" Nullable="false" MaxLength="200" />
+          <Property Type="Int32" Name="Column1" Nullable="true" />
+          <Property Type="Double" Name="Column2" Nullable="true" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="RestaurantDBModelStoreContainer" CdmEntityContainer="RestaurantDBEntities">
+          <EntitySetMapping Name="Bills">
+            <EntityTypeMapping TypeName="RestaurantDBModel.Bill">
+              <MappingFragment StoreEntitySet="Bills">
+                <ScalarProperty Name="BillsID" ColumnName="BillsID" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="RestaurantID" ColumnName="RestaurantID" />
+                <ScalarProperty Name="BillAmount" ColumnName="BillAmount" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Cuisines">
+            <EntityTypeMapping TypeName="RestaurantDBModel.Cuisine">
+              <MappingFragment StoreEntitySet="Cuisine">
+                <ScalarProperty Name="CuisineID" ColumnName="CuisineID" />
+                <ScalarProperty Name="RestaurantID" ColumnName="RestaurantID" />
+                <ScalarProperty Name="CuisineName" ColumnName="CuisineName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="RestaurantDBModel.Customer">
+              <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="RestaurantID" ColumnName="RestaurantID" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DiningTables">
+            <EntityTypeMapping TypeName="RestaurantDBModel.DiningTable">
+              <MappingFragment StoreEntitySet="DiningTable">
+                <ScalarProperty Name="DiningTableID" ColumnName="DiningTableID" />
+                <ScalarProperty Name="RestaurantID" ColumnName="RestaurantID" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DiningTableTracks">
+            <EntityTypeMapping TypeName="RestaurantDBModel.DiningTableTrack">
+              <MappingFragment StoreEntitySet="DiningTableTrack">
+                <ScalarProperty Name="DiningTableTrackID" ColumnName="DiningTableTrackID" />
+                <ScalarProperty Name="DiningTableID" ColumnName="DiningTableID" />
+                <ScalarProperty Name="TableStatus" ColumnName="TableStatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrderTables">
+            <EntityTypeMapping TypeName="RestaurantDBModel.OrderTable">
+              <MappingFragment StoreEntitySet="OrderTable">
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+                <ScalarProperty Name="RestaurantID" ColumnName="RestaurantID" />
+                <ScalarProperty Name="MenuItemID" ColumnName="MenuItemID" />
+                <ScalarProperty Name="ItemQuantity" ColumnName="ItemQuantity" />
+                <ScalarProperty Name="OrderAmount" ColumnName="OrderAmount" />
+                <ScalarProperty Name="DiningTableId" ColumnName="DiningTableId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Restaurants">
+            <EntityTypeMapping TypeName="RestaurantDBModel.Restaurant">
+              <MappingFragment StoreEntitySet="Restaurant">
+                <ScalarProperty Name="RestaurantID" ColumnName="RestaurantID" />
+                <ScalarProperty Name="RestaurantName" ColumnName="RestaurantName" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RestaurantMenuItems">
+            <EntityTypeMapping TypeName="RestaurantDBModel.RestaurantMenuItem">
+              <MappingFragment StoreEntitySet="RestaurantMenuItem">
+                <ScalarProperty Name="MenuItemID" ColumnName="MenuItemID" />
+                <ScalarProperty Name="CuisineID" ColumnName="CuisineID" />
+                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
+                <ScalarProperty Name="ItemPrice" ColumnName="ItemPrice" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VListCuisinewiseItemDetails">
+            <EntityTypeMapping TypeName="RestaurantDBModel.VListCuisinewiseItemDetail">
+              <MappingFragment StoreEntitySet="VListCuisinewiseItemDetails">
+                <ScalarProperty Name="CuisineName" ColumnName="CuisineName" />
+                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
+                <ScalarProperty Name="ItemPrice" ColumnName="ItemPrice" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionName="RestaurantDBModel.Store.getOrderDetailsByOrderID" FunctionImportName="getOrderDetailsByOrderID">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="RestaurantDBModel.getOrderDetailsByOrderID_Result">
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+                <ScalarProperty Name="RestaurantID" ColumnName="RestaurantID" />
+                <ScalarProperty Name="MenuItemID" ColumnName="MenuItemID" />
+                <ScalarProperty Name="ItemQuantity" ColumnName="ItemQuantity" />
+                <ScalarProperty Name="OrderAmount" ColumnName="OrderAmount" />
+                <ScalarProperty Name="DiningTableId" ColumnName="DiningTableId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="CRUD_Bills" FunctionName="RestaurantDBModel.Store.CRUD_Bills" />
+          <FunctionImportMapping FunctionImportName="CRUD_Cuisine" FunctionName="RestaurantDBModel.Store.CRUD_Cuisine" />
+          <FunctionImportMapping FunctionImportName="CRUD_Customer" FunctionName="RestaurantDBModel.Store.CRUD_Customer" />
+          <FunctionImportMapping FunctionImportName="CRUD_DiningTable" FunctionName="RestaurantDBModel.Store.CRUD_DiningTable" />
+          <FunctionImportMapping FunctionImportName="CRUD_DiningTableTrack" FunctionName="RestaurantDBModel.Store.CRUD_DiningTableTrack" />
+          <FunctionImportMapping FunctionImportName="CRUD_OrderTable" FunctionName="RestaurantDBModel.Store.CRUD_OrderTable" />
+          <FunctionImportMapping FunctionImportName="CRUD_Restaurant" FunctionName="RestaurantDBModel.Store.CRUD_Restaurant" />
+          <FunctionImportMapping FunctionImportName="CRUD_RestaurantMenuItem" FunctionName="RestaurantDBModel.Store.CRUD_RestaurantMenuItem" />
+          <FunctionImportMapping FunctionImportName="getDaywiseAndTablewiseOrderAmount" FunctionName="RestaurantDBModel.Store.getDaywiseAndTablewiseOrderAmount">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="RestaurantDBModel.getDaywiseAndTablewiseOrderAmount_Result">
+                <ScalarProperty Name="RestaurantName" ColumnName="RestaurantName" />
+                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+                <ScalarProperty Name="DiningTableId" ColumnName="DiningTableId" />
+                <ScalarProperty Name="Day" ColumnName="Day" />
+                <ScalarProperty Name="TotalOrderAmount" ColumnName="TotalOrderAmount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="getFilterByOrderByAllCustomerDetails" FunctionName="RestaurantDBModel.Store.getFilterByOrderByAllCustomerDetails" />
+          <FunctionImportMapping FunctionImportName="getListOfCurrentlyVacantTables" FunctionName="RestaurantDBModel.Store.getListOfCurrentlyVacantTables">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="RestaurantDBModel.getListOfCurrentlyVacantTables_Result">
+                <ScalarProperty Name="RestaurantName" ColumnName="RestaurantName" />
+                <ScalarProperty Name="TableStatus" ColumnName="TableStatus" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="getYearwiseAndRestaurantwiseOrderAmount" FunctionName="RestaurantDBModel.Store.getYearwiseAndRestaurantwiseOrderAmount">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="RestaurantDBModel.getYearwiseAndRestaurantwiseOrderAmount_Result">
+                <ScalarProperty Name="RestaurantName" ColumnName="RestaurantName" />
+                <ScalarProperty Name="Column1" ColumnName="Column1" />
+                <ScalarProperty Name="Column2" ColumnName="Column2" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_CustomerDetails" FunctionName="RestaurantDBModel.Store.sp_CustomerDetails" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
