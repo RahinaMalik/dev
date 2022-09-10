@@ -56,6 +56,7 @@
     <Compile Include="Cuisine.cs">
       <DependentUpon>RestaurantDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="CuisineValidation.cs" />
     <Compile Include="Customer.cs">
       <DependentUpon>RestaurantDBModel.tt</DependentUpon>
     </Compile>
