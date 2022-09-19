@@ -36,7 +36,8 @@ namespace BOL_Business_Object_Layer_
         public virtual DbSet<Restaurant> Restaurants { get; set; }
         public virtual DbSet<RestaurantMenuItem> RestaurantMenuItems { get; set; }
         public virtual DbSet<VListCuisinewiseItemDetail> VListCuisinewiseItemDetails { get; set; }
-    
+        public object As { get; set; }
+
         [DbFunction("RestaurantDBEntities", "getOrderDetailsByOrderID")]
         public virtual IQueryable<getOrderDetailsByOrderID_Result> getOrderDetailsByOrderID(Nullable<int> orderID)
         {

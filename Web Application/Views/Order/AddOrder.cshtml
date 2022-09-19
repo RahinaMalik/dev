@@ -5,20 +5,19 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>AddOrder</h2>
 
-@using (Html.BeginForm("AddOrder", "Order", FormMethod.Post)) 
+@using (Html.BeginForm("AddOrder", "Order", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
-        <h4>OrderTable</h4>
+        <h4>Add New Order</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
             @Html.LabelFor(model => model.OrderDate, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.OrderDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.OrderDate, new { htmlAttributes = new { @class = "form-control", type = "date" } })
                 @Html.ValidationMessageFor(model => model.OrderDate, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -26,16 +25,24 @@
         <div class="form-group">
             @Html.LabelFor(model => model.RestaurantID, "RestaurantID", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("RestaurantID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.RestaurantID, ViewBag.RestaurnatList as SelectList, "---Select Restaurant---", new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.RestaurantID, "", new { @class = "text-danger" })
+
+                @*@Html.DropDownList("RestaurantID", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.RestaurantID, "", new { @class = "text-danger" })*@
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.MenuItemID, "MenuItemID", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("MenuItemID", null, htmlAttributes: new { @class = "form-control" })
+
+                @Html.DropDownListFor(model => model.MenuItemID, ViewBag.AvailableMenuList as SelectList, "---Select MenuItem---", new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.MenuItemID, "", new { @class = "text-danger" })
+
+
+                @*@Html.DropDownList("MenuItemID", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.MenuItemID, "", new { @class = "text-danger" })*@
             </div>
         </div>
 
@@ -58,8 +65,12 @@
         <div class="form-group">
             @Html.LabelFor(model => model.DiningTableId, "DiningTableId", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("DiningTableId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.DiningTableId, ViewBag.AvailableDiningTables as SelectList, "---Select Dining Table---", new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.DiningTableId, "", new { @class = "text-danger" })
+                @*@Html.DropDownListFor(model => model.DiningTableId, new SelectList(""), "---Select Dining Table---", new { @class = "form-control" })*@
+
+                @*@Html.DropDownList("DiningTableId", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.DiningTableId, "", new { @class = "text-danger" })*@
             </div>
         </div>
 
@@ -71,3 +82,148 @@
     </div>
 }
 
+<link href="~/Content/jquery-ui.min.css" rel="stylesheet" />
+
+@*<script src="~/Scripts/jquery-3.4.1.min.js"></script>*@
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+@*<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>*@
+<script src="~/Scripts/jquery-ui-1.13.2.min.js"></script>
+
+<script type="text/javascript">
+    //Get MenuItem List by RestaurantID
+    $(document).ready(function () {
+        //$("#OrderDate").datepicker("setDate", new Date());
+
+        //$("#OrderDate").datepicker({
+        //    autoclose: true,
+        //    format: "dd-mm-yyyy",
+        //    immediateUpdates: true,
+        //    todayBtn: true,
+        //    todayHighlight: true
+        //}).datepicker("setDate", "0");
+
+        //$("#OrderDate").datepicker({
+        //    "setDate": new Date(),
+        //    "autoclose": trues
+        //});
+       $("#RestaurantID").change(function () {
+           var resturantId = $(this).val();
+           //console.log($(this).val());
+           //var dummy = $("#RestaurantID").val();
+           //console.log("resId.this:" + dummy)
+           document.getElementById("DiningTableId").value = 1;
+
+           GetMenuItemsByRestaurantID(resturantId);
+           });
+
+
+        });
+
+    //Count total order amount based on Item Qty and Price
+    $("#ItemQuantity").change(function () {
+                 var Qty = $(this).val();
+                 var selectedItem = $("#MenuItemID").val();
+                 var textPrice = $("#OrderAmount");
+                 var statesProgress = $("#states-loading-progress");
+             statesProgress.show();
+             $.ajax({
+                 cache: false,
+                 type: "GET",
+                 url: "@(Url.RouteUrl("getTotalMenuItemPrice"))",
+                 data: { "MenuItemID": selectedItem, "Qty": Qty },
+                    success: function (data) {
+                        textPrice.html('');
+                        $('#OrderAmount').val(data);
+                        statesProgress.hide();
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Failed to retrieve price.');
+                        statesProgress.hide();
+                    }
+                });
+    });
+
+    //Get Table Status either Vacant/Occupied
+    $("#DiningTableId").change(function () {
+                 var selectedItem = $(this).val();
+                 var statesProgress = $("#states-loading-progress");
+             statesProgress.show();
+             $.ajax({
+                 cache: false,
+                 type: "GET",
+                 url: "@(Url.RouteUrl("getTableStatus"))",
+                 data: { "DiningTableId": selectedItem},
+                 success: function (data) {
+                     if (data == "Occupied") {
+                         alert('Table is already Occupied.');
+                     }
+                     else {
+                         alert('Table is Vacant.');
+                     }
+                        statesProgress.hide();
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Failed to get table status.');
+                        statesProgress.hide();
+                    }
+                });
+            });
+
+    ////Get Dining Table List By RestaurantID
+    function GetMenuItemsByRestaurantID(RestaurantID) {
+              var selectedItem = RestaurantID;
+              var ddlMenus = $("#MenuItemID");
+              var statesProgress = $("#states-loading-progress");
+             statesProgress.show();
+             $.ajax({
+                 cache: false,
+                 type: "GET",
+                 url: "@(Url.RouteUrl("GetMenuItemListByRestaurantID"))",
+                    data: {"RestaurantID": selectedItem },
+                    success: function (data) {
+                        ddlMenus.html('');
+                        $.each(data, function (id, option) {
+                            console.log("data:" + option.id + option.name);
+                            ddlMenus.append($('<option></option>').val(option.id).html(option.name));
+
+                        });
+                        statesProgress.hide();
+                        GetDiningTableByRestaurantID(RestaurantID);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Failed to retrieve menus.');
+                        statesProgress.hide();
+                    }
+                });
+    }
+
+    function GetDiningTableByRestaurantID(RestaurantID) {
+         var selectedItem = RestaurantID;
+              var ddlTables = $("#DiningTableId");
+              var statesProgress = $("#states-loading-progress");
+             statesProgress.show();
+             $.ajax({
+                 cache: false,
+                 type: "GET",
+                 url: "@(Url.RouteUrl("GetDiningTableList"))",
+                 data: { "RestaurantID": selectedItem },
+                 success: function (data) {
+
+                        ddlTables.html('');
+                     $.each(data, function (id, option) {
+                         console.log("data:" + option.id + option.name);
+                            ddlTables.append($('<option></option>').val(option.id).html(option.name));
+                        });
+                        statesProgress.hide();
+                        //GetDiningTableByRestaurantID(RestaurantID);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Failed to retrieve tables.');
+                        statesProgress.hide();
+                    }
+                });
+    }
+
+</script>

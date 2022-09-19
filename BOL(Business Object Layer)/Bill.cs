@@ -11,13 +11,16 @@ namespace BOL_Business_Object_Layer_
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Bill
     {
         public int BillsID { get; set; }
+        [Required]
         public int OrderID { get; set; }
         public int RestaurantID { get; set; }
         public double BillAmount { get; set; }
+        [Required]
         public int CustomerID { get; set; }
     
         public virtual Customer Customer { get; set; }

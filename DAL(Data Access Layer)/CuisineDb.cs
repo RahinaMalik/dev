@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,9 @@ namespace DAL_Data_Access_Layer_
         }
 
         public int CuisineID { get; set; }
+        [Required]
         public int RestaurantID { get; set; }
+        [Required]
         public int CuisineName { get; set; }
 
         //Get List by Using IEnumerable class

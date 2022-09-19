@@ -26,16 +26,14 @@
                         <ul class="dropdown-menu">
                             <li>@Html.ActionLink("Cuisine", "GetCuisineList", "Cuisine")</li>
 
-                            <li>@Html.ActionLink("Add Cuisine", "AddCuisine", "Cuisine")</li>
+                            @*<li>@Html.ActionLink("Add Cuisine", "AddCuisine", "Cuisine")</li>*@
                         </ul>
                     </li>
                     <li>@Html.ActionLink("Add Order", "AddOrder", "Order")</li>
-                    @*<li>@Html.ActionLink("Edit Cuisine", "Edit", new { Controller = "Cuisine", area = "User" })</li>
-                    <li>@Html.ActionLink("Order", "Index", new { Controller = "Cuisine", area = "User" })</li>
-                    <li>@Html.ActionLink("Bills", "Create", new { Controller = "Cuisine", area = "User" })</li>
-                    <li>@Html.ActionLink("Dining Table Track", "Create", new { Controller = "Cuisine", area = "User" })</li>
-                    <li>@Html.ActionLink("Customer", "Create", new { Controller = "Cuisine", area = "User" })</li>
-                    <li>@Html.ActionLink("Reports", "Create", new { Controller = "Cuisine", area = "User" })</li>*@
+                    <li>@Html.ActionLink("Add Customer", "AddCustomer", "Customer")</li>
+                    <li>@Html.ActionLink("Bills", "AddBills", "Bills")</li>
+                    <li>@Html.ActionLink("Report", "Report", "Report")</li>
+                    @*<li>@Html.ActionLink("Edit Cuisine", "Edit", new { Controller = "Cuisine", area = "User" })</li>*@
 
 
 

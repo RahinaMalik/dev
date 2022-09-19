@@ -16,7 +16,7 @@ namespace BLL_Business_Logic_Layer_
         private SqlConnection con;
         private CuisineDb objDb;
 
-        public object ConfigurationManager { get; private set; }
+        //public object ConfigurationManager { get; private set; }
 
         public CuisineBs()
         {

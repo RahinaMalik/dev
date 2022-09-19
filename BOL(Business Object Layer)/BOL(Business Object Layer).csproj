@@ -53,6 +53,7 @@
     <Compile Include="Bill.cs">
       <DependentUpon>RestaurantDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="BillsValidation.cs" />
     <Compile Include="Cuisine.cs">
       <DependentUpon>RestaurantDBModel.tt</DependentUpon>
     </Compile>
@@ -60,6 +61,7 @@
     <Compile Include="Customer.cs">
       <DependentUpon>RestaurantDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="CustomerValidation.cs" />
     <Compile Include="DiningTable.cs">
       <DependentUpon>RestaurantDBModel.tt</DependentUpon>
     </Compile>
@@ -81,7 +83,9 @@
     <Compile Include="OrderTable.cs">
       <DependentUpon>RestaurantDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="OrderValidation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReportValidation.cs" />
     <Compile Include="Restaurant.cs">
       <DependentUpon>RestaurantDBModel.tt</DependentUpon>
     </Compile>

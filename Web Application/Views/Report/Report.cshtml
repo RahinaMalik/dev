@@ -1,0 +1,114 @@
+﻿@model IEnumerable<BOL_Business_Object_Layer_.ReportValidation>
+@{
+    ViewBag.Title = "Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Report</h4>
+
+<br />
+<br />
+<div class="container">
+    <b>Filter By : </b>
+    <select id="FilterBy">
+        <option value="OrderID">Order ID</option>
+        <option value="RestaurantID">Restaurant ID</option>
+        <option value="CustomerID">Customer ID</option>
+        <option value="CustomerName">Customer Name</option>
+        <option value="RestaurantName">Restaurant Name</option>
+        <option value="OrderDate">Order Date</option>
+    </select>
+
+    <b>Order By : </b>
+    <select id="OrderBy">
+        <option value="OrderID">Order ID</option>
+        <option value="RestaurantID">Restaurant ID</option>
+        <option value="CustomerID">Customer ID</option>
+        <option value="CustomerName">Customer Name</option>
+        <option value="RestaurantName">Restaurant Name</option>
+        <option value="OrderDate">Order Date</option>
+    </select>
+
+    @Html.TextBox("Search")<input type="submit" id="SearchBtn" value="Search" /><br /><br />
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>OrderID</th>
+                <th>CustomerID</th>
+                <th>RestaurantName</th>
+                <th>CustomerName</th>
+                <th>ItemQuantity</th>
+                <th>OrderAmount</th>
+                <th>DiningTableID</th>
+                <th>Location</th>
+            </tr>
+        </thead>
+        <tbody id="DataSearching">
+            @foreach (var Item in Model)
+            {
+                <tr>
+                    <td>@Item.OrderID</td>
+                    <td>@Item.CustomerID</td>
+                    <td>@Item.RestaurantName</td>
+                    <td>@Item.CustomerName</td>
+                    <td>@Item.ItemQuantity</td>
+                    <td>@Item.OrderAmount</td>
+                    <td>@Item.DiningTableID</td>
+                    <td>@Item.Location</td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+</div>
+
+<link href="~/Content/jquery-ui.min.css" rel="stylesheet" />
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+@*<script src="~/Scripts/jquery-3.4.1.js"></script>*@
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.13.2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#SearchBtn").click(function () {
+            var FilterBy = $("#FilterBy").val();
+            var OrderBy = $("#OrderBy").val();
+            var SearchValue = $("#Search").val();
+            var SetData = ("#DataSearching");
+            //console.log(FilterBy + " " + OrderBy + " " + SearchValue);
+
+            $.ajax({
+                type: "post",
+                url: "/Report/GetFilterResult?FilterBy=" + FilterBy + "&OrderBy=" + OrderBy + "&SearchValue=" + SearchValue,
+                contentType: "html",
+                success: function (result) {
+                    SetData.html('');
+                    console.log("length: " + result.length)
+                    if (result.length == 0) {
+                        SetData.append('<tr style="color:red"><td colspan="8">No Match Record Found</td></tr>')
+                    }
+                    else {
+                        $.each(result, function (index, value) {
+                            var Data = "<tr>" +
+                                "<td>" + value.OrderID + "</td>" +
+                                "<td>" + value.CustomerID + "</td>" +
+                                "<td>" + value.RestaurantName + "</td>" +
+                                "<td>" + value.CustomerName + "</td>" +
+                                "<td>" + value.ItemQuantity + "</td>" +
+                                "<td>" + value.OrderAmount + "</td>" +
+                                "<td>" + value.DiningTableID + "</td>" +
+                                "<td>" + value.Location + "</td>" +
+                                "</tr>";
+                            setData.append(Data);
+
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+
